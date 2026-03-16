@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>PixelToBinary — We Make Brands Move</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600&family=Playfair+Display:ital,wght@1,400;1,700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#0C0B09;
+  --surface:#141310;
+  --surface2:#1C1A16;
+  --gold:#E8B84B;
+  --gold-dim:#9B7A2E;
+  --gold-pale:#F5E6C0;
+  --warm:#F0E4CC;
+  --muted:#6B6456;
+  --border:#2A2620;
+  --white:#FAF8F4;
+  --display:'Bebas Neue',sans-serif;
+  --italic:'Playfair Display',serif;
+  --body:'Outfit',sans-serif;
+}
+
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--warm);font-family:var(--body);font-weight:300;overflow-x:hidden;cursor:none}
+
+/* CURSOR */
+.cur{position:fixed;width:12px;height:12px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:9999;mix-blend-mode:difference;transition:transform .2s}
+.cur-trail{position:fixed;width:40px;height:40px;border:1px solid var(--gold);border-radius:50%;pointer-events:none;z-index:9998;opacity:.3;transition:all .35s cubic-bezier(.23,1,.32,1)}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:24px 56px;
+  transition:background .4s,border-color .4s;
+  border-bottom:1px solid transparent;
+}
+nav.stuck{background:rgba(12,11,9,.92);backdrop-filter:blur(16px);border-color:var(--border)}
+.logo{
+  font-family:var(--display);
+  font-size:22px;letter-spacing:.08em;
+  color:var(--white);
+  text-decoration:none;
+}
+.logo span{color:var(--gold)}
+.nav-links{display:flex;gap:36px;list-style:none}
+.nav-links a{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .2s}
+.nav-links a:hover{color:var(--warm)}
+.nav-btn{
+  font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  padding:10px 22px;border:1px solid var(--gold);
+  background:transparent;color:var(--gold);
+  text-decoration:none;cursor:none;
+  transition:all .25s;
+}
+.nav-btn:hover{background:var(--gold);color:var(--bg)}
+
+/* HERO */
+.hero{
+  min-height:100vh;
+  display:flex;flex-direction:column;justify-content:flex-end;
+  padding:0 56px 72px;
+  position:relative;overflow:hidden;
+}
+
+.hero-bg{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 60% 50% at 70% 40%, rgba(232,184,75,.07) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 60% at 20% 70%, rgba(232,184,75,.04) 0%, transparent 60%);
+}
+
+/* Animated film grain */
+.grain{
+  position:absolute;inset:0;
+  opacity:.35;
+  pointer-events:none;
+  animation:grain 0.8s steps(2) infinite;
+}
+@keyframes grain{
+  0%{transform:translate(0,0)}
+  25%{transform:translate(-2%,-2%)}
+  50%{transform:translate(2%,1%)}
+  75%{transform:translate(-1%,2%)}
+  100%{transform:translate(1%,-1%)}
+}
+
+.hero-eyebrow{
+  display:flex;align-items:center;gap:16px;
+  font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);
+  margin-bottom:24px;
+  opacity:0;animation:up .8s .3s forwards;
+}
+.hero-eyebrow::before{content:'';width:40px;height:1px;background:var(--gold);opacity:.5}
+
+.hero-title{
+  font-family:var(--display);
+  font-size:clamp(80px,13vw,180px);
+  line-height:.92;
+  letter-spacing:.02em;
+  color:var(--white);
+  margin-bottom:0;
+  opacity:0;animation:up .9s .45s forwards;
+}
+.hero-title .italic-line{
+  font-family:var(--italic);
+  font-style:italic;
+  font-size:clamp(60px,10vw,140px);
+  color:var(--gold);
+  display:block;
+  line-height:1.05;
+}
+
+.hero-bottom{
+  display:flex;align-items:flex-end;justify-content:space-between;
+  margin-top:48px;
+  opacity:0;animation:up .9s .65s forwards;
+}
+
+.hero-desc{
+  font-size:15px;line-height:1.8;
+  color:var(--muted);max-width:360px;
+}
+.hero-desc strong{color:var(--warm);font-weight:400}
+
+.hero-ctas{display:flex;gap:16px;align-items:center}
+.btn-gold{
+  padding:16px 40px;background:var(--gold);
+  color:var(--bg);font-size:12px;font-weight:600;
+  letter-spacing:.12em;text-transform:uppercase;
+  text-decoration:none;cursor:none;
+  transition:all .25s;
+}
+.btn-gold:hover{background:var(--gold-pale)}
+.btn-outline-warm{
+  padding:16px 32px;border:1px solid var(--border);
+  color:var(--muted);font-size:12px;letter-spacing:.12em;
+  text-transform:uppercase;text-decoration:none;cursor:none;
+  transition:all .25s;
+}
+.btn-outline-warm:hover{border-color:var(--muted);color:var(--warm)}
+
+.scroll-hint{
+  position:absolute;right:56px;top:50%;transform:translateY(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:12px;
+  opacity:0;animation:fadeIn 1s 1s forwards;
+}
+.scroll-line{
+  width:1px;height:80px;background:linear-gradient(to bottom,transparent,var(--gold));
+  animation:scrollPulse 2s ease-in-out infinite;
+}
+@keyframes scrollPulse{
+  0%,100%{opacity:.3;transform:scaleY(.8)}
+  50%{opacity:1;transform:scaleY(1)}
+}
+.scroll-text{
+  font-size:9px;letter-spacing:.25em;text-transform:uppercase;
+  color:var(--muted);writing-mode:vertical-rl;
+}
+
+/* MARQUEE */
+.marquee-wrap{
+  border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+  overflow:hidden;padding:18px 0;
+  background:var(--surface);
+}
+.marquee-track{
+  display:flex;width:max-content;
+  animation:marquee 30s linear infinite;
+}
+.marquee-item{
+  display:flex;align-items:center;gap:24px;
+  padding:0 48px;
+  font-family:var(--display);
+  font-size:28px;letter-spacing:.06em;
+  color:var(--surface2);
+  white-space:nowrap;
+}
+.marquee-item.lit{color:var(--gold)}
+.marquee-dot{width:6px;height:6px;background:var(--gold);border-radius:50%;flex-shrink:0}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* SECTION COMMONS */
+section{padding:120px 56px}
+.s-label{
+  font-size:10px;letter-spacing:.28em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:20px;
+  display:flex;align-items:center;gap:12px;
+}
+.s-label::before{content:'';width:24px;height:1px;background:var(--gold)}
+.s-title{
+  font-family:var(--display);
+  font-size:clamp(42px,6vw,80px);
+  letter-spacing:.03em;
+  color:var(--white);
+  line-height:.95;
+}
+.s-title em{
+  font-family:var(--italic);
+  font-style:italic;font-size:.85em;
+  color:var(--gold);
+}
+
+/* WORK */
+.work{background:var(--surface);padding-top:100px;padding-bottom:100px}
+.work-header{
+  display:flex;align-items:flex-end;justify-content:space-between;
+  margin-bottom:64px;
+}
+.view-all{
+  font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);text-decoration:none;
+  display:flex;align-items:center;gap:8px;
+  transition:color .2s;padding-bottom:4px;
+}
+.view-all::after{content:'↗';transition:transform .25s}
+.view-all:hover{color:var(--gold)}
+.view-all:hover::after{transform:translate(3px,-3px)}
+
+.work-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:3px}
+.work-right{display:grid;gap:3px}
+
+.work-item{
+  position:relative;overflow:hidden;cursor:none;
+  background:var(--surface2);
+}
+.work-item-inner{
+  position:relative;min-height:320px;
+  display:flex;flex-direction:column;justify-content:flex-end;
+  padding:32px;
+  transition:transform .6s cubic-bezier(.23,1,.32,1);
+}
+.work-item:hover .work-item-inner{transform:scale(1.04)}
+
+/* Gradient overlays per project */
+.bg-wine{background:linear-gradient(145deg,#1a0505 0%,#4a1010 45%,#8b2020 100%)}
+.bg-realestate{background:linear-gradient(145deg,#050d1a 0%,#0e2240 50%,#1e3d6b 100%)}
+.bg-wedding{background:linear-gradient(145deg,#1a1008 0%,#3d2510 50%,#7a4820 100%)}
+.bg-social{background:linear-gradient(145deg,#05050f 0%,#10103a 50%,#1a1a5a 100%)}
+.bg-logo{background:linear-gradient(145deg,#0a100a 0%,#1a2d1a 50%,#2d4a2d 100%)}
+.bg-gym{background:linear-gradient(145deg,#080808 0%,#1a1a1a 50%,#2a2a2a 100%)}
+
+.work-overlay{
+  position:absolute;inset:0;
+  background:rgba(0,0,0,.25);
+  transition:opacity .4s;
+}
+.work-item:hover .work-overlay{opacity:0}
+
+.work-tag{
+  font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+  color:rgba(255,255,255,.4);margin-bottom:6px;
+  position:relative;z-index:1;
+}
+.work-name{
+  font-family:var(--display);font-size:26px;letter-spacing:.04em;
+  color:var(--white);position:relative;z-index:1;line-height:1.1;
+}
+.work-arrow{
+  position:absolute;top:24px;right:24px;z-index:1;
+  width:36px;height:36px;border:1px solid rgba(255,255,255,.2);
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:14px;color:rgba(255,255,255,.4);
+  transition:all .3s;
+}
+.work-item:hover .work-arrow{
+  border-color:var(--gold);color:var(--gold);
+  transform:rotate(45deg);
+}
+
+.work-bottom{display:grid;grid-template-columns:1fr 1fr;gap:3px}
+
+/* SERVICES */
+.services-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  border:1px solid var(--border);
+  margin-top:64px;
+}
+.svc{
+  padding:48px 32px;border-right:1px solid var(--border);
+  position:relative;overflow:hidden;
+  transition:background .3s;
+}
+.svc:last-child{border-right:none}
+.svc::before{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:2px;
+  background:var(--gold);transform:scaleX(0);transform-origin:left;
+  transition:transform .4s cubic-bezier(.23,1,.32,1);
+}
+.svc:hover{background:var(--surface2)}
+.svc:hover::before{transform:scaleX(1)}
+
+.svc-num{font-size:11px;letter-spacing:.1em;color:var(--gold-dim);margin-bottom:40px}
+.svc-glyph{
+  font-family:var(--display);font-size:52px;color:var(--border);
+  margin-bottom:20px;line-height:1;
+  transition:color .3s;
+}
+.svc:hover .svc-glyph{color:var(--gold-dim)}
+.svc-name{
+  font-size:17px;font-weight:500;color:var(--white);
+  margin-bottom:12px;line-height:1.3;
+}
+.svc-desc{font-size:13px;line-height:1.75;color:var(--muted);margin-bottom:32px}
+.svc-link{
+  font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--gold-dim);text-decoration:none;
+  transition:color .2s;display:inline-flex;align-items:center;gap:6px;
+}
+.svc:hover .svc-link{color:var(--gold)}
+
+/* ABOUT */
+.about{background:var(--surface);display:grid;grid-template-columns:1fr 1fr;gap:120px;align-items:center}
+.about-giant{
+  font-family:var(--display);
+  font-size:clamp(100px,16vw,220px);
+  line-height:.85;
+  color:var(--surface2);
+  letter-spacing:.02em;
+  pointer-events:none;
+  user-select:none;
+}
+.about-content{}
+.about-pull{
+  font-family:var(--italic);
+  font-style:italic;
+  font-size:clamp(22px,2.5vw,32px);
+  color:var(--warm);
+  line-height:1.55;
+  margin-bottom:32px;
+}
+.about-pull strong{color:var(--gold);font-style:normal;font-family:var(--body);font-weight:500}
+.about-body{font-size:14px;line-height:1.85;color:var(--muted);margin-bottom:48px}
+
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);margin-top:56px}
+.stat{background:var(--surface);padding:28px 24px}
+.stat-n{
+  font-family:var(--display);font-size:48px;color:var(--gold);
+  letter-spacing:.02em;line-height:1;margin-bottom:6px;
+}
+.stat-n sup{font-size:22px}
+.stat-l{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+
+/* TEAM */
+.team-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:3px;
+  margin-top:64px;
+}
+.team-card{background:var(--surface);overflow:hidden}
+.team-photo{
+  height:260px;overflow:hidden;
+  background:var(--surface2);
+  position:relative;
+}
+.team-photo-fill{
+  width:100%;height:100%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:80px;
+  transition:transform .5s cubic-bezier(.23,1,.32,1);
+}
+.team-card:hover .team-photo-fill{transform:scale(1.06)}
+.team-info{padding:24px}
+.team-name{font-size:17px;font-weight:500;color:var(--white);margin-bottom:4px}
+.team-role{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+.team-bio{font-size:13px;line-height:1.7;color:var(--muted)}
+
+/* TESTIMONIALS */
+.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);margin-top:64px}
+.testi{background:var(--bg);padding:48px 36px}
+.testi-mark{
+  font-family:var(--italic);font-style:italic;
+  font-size:72px;line-height:.6;color:var(--gold-dim);
+  margin-bottom:24px;opacity:.5;
+}
+.testi-text{
+  font-family:var(--italic);font-style:italic;
+  font-size:17px;line-height:1.75;color:var(--warm);
+  margin-bottom:32px;
+}
+.testi-foot{
+  display:flex;align-items:center;gap:12px;
+  padding-top:24px;border-top:1px solid var(--border);
+}
+.testi-avatar{
+  width:38px;height:38px;border-radius:50%;
+  background:var(--surface2);display:flex;align-items:center;justify-content:center;
+  font-size:18px;flex-shrink:0;
+}
+.testi-who{font-size:13px;color:var(--warm);font-weight:500;margin-bottom:2px}
+.testi-co{font-size:11px;color:var(--muted);letter-spacing:.06em}
+
+/* CTA */
+.cta-section{
+  background:var(--gold);
+  padding:100px 56px;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:60px;
+  position:relative;overflow:hidden;
+}
+.cta-section::before{
+  content:'PTB';
+  position:absolute;right:-20px;top:50%;transform:translateY(-50%);
+  font-family:var(--display);font-size:280px;color:rgba(0,0,0,.06);
+  line-height:1;pointer-events:none;letter-spacing:.02em;
+}
+.cta-big{
+  font-family:var(--display);
+  font-size:clamp(48px,7vw,96px);
+  color:var(--bg);line-height:.95;letter-spacing:.03em;
+  position:relative;z-index:1;
+}
+.cta-big em{
+  font-family:var(--italic);font-style:italic;
+  font-size:.75em;color:rgba(12,11,9,.65);
+}
+.cta-right{display:flex;flex-direction:column;gap:20px;position:relative;z-index:1}
+.cta-email{
+  font-size:15px;color:rgba(12,11,9,.6);text-decoration:none;
+  letter-spacing:.04em;transition:color .2s;
+}
+.cta-email:hover{color:var(--bg)}
+.btn-dark{
+  padding:18px 40px;background:var(--bg);color:var(--gold);
+  font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+  text-decoration:none;cursor:none;transition:all .25s;white-space:nowrap;
+}
+.btn-dark:hover{background:var(--surface2)}
+
+/* FOOTER */
+footer{
+  background:var(--surface);
+  padding:56px 56px 40px;
+  border-top:1px solid var(--border);
+}
+.footer-top{
+  display:flex;justify-content:space-between;align-items:flex-start;
+  padding-bottom:48px;border-bottom:1px solid var(--border);margin-bottom:32px;
+}
+.footer-logo{
+  font-family:var(--display);font-size:28px;
+  letter-spacing:.06em;color:var(--white);margin-bottom:10px;
+}
+.footer-logo span{color:var(--gold)}
+.footer-tag{font-size:13px;color:var(--muted);line-height:1.6;max-width:200px}
+.footer-cols{display:flex;gap:72px}
+.fcol-title{
+  font-size:10px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--warm);margin-bottom:20px;font-weight:500;
+}
+.fcol-links{list-style:none;display:flex;flex-direction:column;gap:12px}
+.fcol-links a{font-size:13px;color:var(--muted);text-decoration:none;transition:color .2s}
+.fcol-links a:hover{color:var(--warm)}
+.footer-btm{display:flex;justify-content:space-between;align-items:center}
+.footer-copy{font-size:12px;color:var(--muted);letter-spacing:.05em}
+.footer-soc{display:flex;gap:24px}
+.footer-soc a{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .2s}
+.footer-soc a:hover{color:var(--gold)}
+
+/* LOCATIONS in footer */
+.footer-locs{display:flex;gap:40px;margin-top:12px}
+.floc-city{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--warm);margin-bottom:4px;font-weight:500}
+.floc-addr{font-size:12px;color:var(--muted);line-height:1.65}
+
+/* ANIMS */
+@keyframes up{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+.reveal{opacity:0;transform:translateY(32px);transition:opacity .85s ease,transform .85s ease}
+.reveal.in{opacity:1;transform:none}
+</style>
+</head>
+<body>
+
+<div class="cur" id="cur"></div>
+<div class="cur-trail" id="trail"></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a class="logo" href="#">PIXEL<span>TO</span>BINARY</a>
+  <ul class="nav-links">
+    <li><a href="#">Work</a></li>
+    <li><a href="#">Services</a></li>
+    <li><a href="#">About</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+  <a class="nav-btn" href="#">Get a Quote</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <canvas class="grain" id="grainCanvas"></canvas>
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    <div class="scroll-text">Scroll</div>
+  </div>
+  <div class="hero-eyebrow">Mumbai · Toronto · Full-Service Creative Agency</div>
+  <h1 class="hero-title">
+    WE MAKE<br>
+    <span class="italic-line">brands move.</span>
+  </h1>
+  <div class="hero-bottom">
+    <p class="hero-desc">
+      From <strong>cinematic reels</strong> to <strong>premium websites</strong> — we craft digital experiences that make your brand impossible to scroll past.
+    </p>
+    <div class="hero-ctas">
+      <a class="btn-gold" href="#">See Our Work</a>
+      <a class="btn-outline-warm" href="#">Book a Call</a>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track" id="mtrack">
+    <span class="marquee-item lit">WEB DESIGN <span class="marquee-dot"></span></span>
+    <span class="marquee-item">BRAND IDENTITY</span>
+    <span class="marquee-item lit">VIDEO EDITING <span class="marquee-dot"></span></span>
+    <span class="marquee-item">SOCIAL MEDIA</span>
+    <span class="marquee-item lit">LOGO DESIGN <span class="marquee-dot"></span></span>
+    <span class="marquee-item">CONTENT WRITING</span>
+    <span class="marquee-item lit">REEL PRODUCTION <span class="marquee-dot"></span></span>
+    <span class="marquee-item">GRAPHIC DESIGN</span>
+    <span class="marquee-item lit">WEB DESIGN <span class="marquee-dot"></span></span>
+    <span class="marquee-item">BRAND IDENTITY</span>
+    <span class="marquee-item lit">VIDEO EDITING <span class="marquee-dot"></span></span>
+    <span class="marquee-item">SOCIAL MEDIA</span>
+    <span class="marquee-item lit">LOGO DESIGN <span class="marquee-dot"></span></span>
+    <span class="marquee-item">CONTENT WRITING</span>
+    <span class="marquee-item lit">REEL PRODUCTION <span class="marquee-dot"></span></span>
+    <span class="marquee-item">GRAPHIC DESIGN</span>
+  </div>
+</div>
+
+<!-- WORK -->
+<section class="work">
+  <div class="work-header reveal">
+    <div>
+      <div class="s-label">Selected Work</div>
+      <div class="s-title">OUR <em>projects</em></div>
+    </div>
+    <a class="view-all" href="#">View All Projects</a>
+  </div>
+  <div class="work-grid reveal">
+    <!-- Big left card -->
+    <div class="work-item">
+      <div class="work-item-inner bg-wine" style="min-height:560px">
+        <div class="work-overlay"></div>
+        <div class="work-arrow">↗</div>
+        <div class="work-tag">Web Design · Branding</div>
+        <div class="work-name">Premium Wine Shop<br>— Full Website</div>
+      </div>
+    </div>
+    <!-- Right column -->
+    <div class="work-right">
+      <div class="work-item">
+        <div class="work-item-inner bg-realestate" style="min-height:275px">
+          <div class="work-overlay"></div>
+          <div class="work-arrow">↗</div>
+          <div class="work-tag">Web · Print · Branding</div>
+          <div class="work-name">Luxury Real Estate<br>— Site & Brochure</div>
+        </div>
+      </div>
+      <div class="work-item">
+        <div class="work-item-inner bg-logo" style="min-height:275px">
+          <div class="work-overlay"></div>
+          <div class="work-arrow">↗</div>
+          <div class="work-tag">Logo Design</div>
+          <div class="work-name">Sai Shakti Group<br>— Brand Refresh</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Bottom row -->
+  <div class="work-bottom reveal" style="margin-top:3px">
+    <div class="work-item">
+      <div class="work-item-inner bg-wedding" style="min-height:280px">
+        <div class="work-overlay"></div>
+        <div class="work-arrow">↗</div>
+        <div class="work-tag">Video Production</div>
+        <div class="work-name">Wedding Reels<br>— Shoot & Edit</div>
+      </div>
+    </div>
+    <div class="work-item">
+      <div class="work-item-inner bg-gym" style="min-height:280px">
+        <div class="work-overlay"></div>
+        <div class="work-arrow">↗</div>
+        <div class="work-tag">Social Media · Video</div>
+        <div class="work-name">Vicky's Gym<br>— Content & Reels</div>
+      </div>
+    </div>
+    <div class="work-item" style="display:none" aria-hidden="true"></div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section style="padding:120px 56px;background:var(--bg)">
+  <div class="reveal" style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:0">
+    <div>
+      <div class="s-label">What We Do</div>
+      <div class="s-title">FULL-SPECTRUM<br><em>creative services</em></div>
+    </div>
+  </div>
+  <div class="services-grid reveal">
+    <div class="svc">
+      <div class="svc-num">01</div>
+      <div class="svc-glyph">WEB</div>
+      <div class="svc-name">Website Design & Development</div>
+      <p class="svc-desc">Premium sites built to perform. E-commerce, portfolios, business platforms — all crafted to impress and convert.</p>
+      <a class="svc-link" href="#">Explore →</a>
+    </div>
+    <div class="svc">
+      <div class="svc-num">02</div>
+      <div class="svc-glyph">VID</div>
+      <div class="svc-name">Video & Reel Production</div>
+      <p class="svc-desc">Cinematic storytelling — weddings, brand reels, social content. Shoot, edit, deliver. We make it move.</p>
+      <a class="svc-link" href="#">Explore →</a>
+    </div>
+    <div class="svc">
+      <div class="svc-num">03</div>
+      <div class="svc-glyph">BRD</div>
+      <div class="svc-name">Branding & Graphic Design</div>
+      <p class="svc-desc">Logos, identity systems, brochures, and decks. We build brands that look like they mean business.</p>
+      <a class="svc-link" href="#">Explore →</a>
+    </div>
+    <div class="svc">
+      <div class="svc-num">04</div>
+      <div class="svc-glyph">SOC</div>
+      <div class="svc-name">Social Media Management</div>
+      <p class="svc-desc">Strategy, content, and growth for Instagram and beyond. We keep your feed alive and your audience engaged.</p>
+      <a class="svc-link" href="#">Explore →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about reveal">
+  <div class="about-giant">PTB</div>
+  <div class="about-content">
+    <div class="s-label">Our Story</div>
+    <p class="about-pull">
+      Born in <strong>Mumbai</strong>. Built for the world. We're a creative agency that refuses to be boring.
+    </p>
+    <p class="about-body">
+      Founded in 2022, PixelToBinary started with a simple belief: every brand — big or small — deserves world-class creative work. From real estate firms to wedding couples to gym owners, we bring the same level of craft and care to every project.
+    </p>
+    <p class="about-body">
+      We're a tight team of designers, strategists, filmmakers, and data thinkers. Mumbai-based, Canada-connected, and globally minded.
+    </p>
+    <a class="btn-gold" href="#" style="display:inline-block;margin-top:8px">Meet The Team →</a>
+    <div class="stats-row">
+      <div class="stat">
+        <div class="stat-n">3<sup>+</sup></div>
+        <div class="stat-l">Years Active</div>
+      </div>
+      <div class="stat">
+        <div class="stat-n">10<sup>+</sup></div>
+        <div class="stat-l">Projects Done</div>
+      </div>
+      <div class="stat">
+        <div class="stat-n">2</div>
+        <div class="stat-l">Countries</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section style="padding:120px 56px;background:var(--bg)">
+  <div class="reveal" style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:0">
+    <div>
+      <div class="s-label">The People</div>
+      <div class="s-title">MEET THE<br><em>team</em></div>
+    </div>
+  </div>
+  <div class="team-grid reveal">
+    <div class="team-card">
+      <div class="team-photo">
+        <div class="team-photo-fill" style="background:linear-gradient(135deg,#1a1008,#3d2510)">👩</div>
+      </div>
+      <div class="team-info">
+        <div class="team-name">Chinky</div>
+        <div class="team-role">Chief Operating Officer</div>
+        <p class="team-bio">Keeps the engine running — ensuring every project is delivered on time with care and precision.</p>
+      </div>
+    </div>
+    <div class="team-card">
+      <div class="team-photo">
+        <div class="team-photo-fill" style="background:linear-gradient(135deg,#080d1a,#0e2240)">👨</div>
+      </div>
+      <div class="team-info">
+        <div class="team-name">Mayank Panchal</div>
+        <div class="team-role">Director of Strategy</div>
+        <p class="team-bio">The brand brain — shapes narratives and growth strategies that actually connect with audiences.</p>
+      </div>
+    </div>
+    <div class="team-card">
+      <div class="team-photo">
+        <div class="team-photo-fill" style="background:linear-gradient(135deg,#0a1a0a,#1e3a1e)">👩‍🎨</div>
+      </div>
+      <div class="team-info">
+        <div class="team-name">Pina Panchal</div>
+        <div class="team-role">Creative Head</div>
+        <p class="team-bio">Visual director — from brand systems to pixel-perfect design, she makes everything look stunning.</p>
+      </div>
+    </div>
+    <div class="team-card">
+      <div class="team-photo">
+        <div class="team-photo-fill" style="background:linear-gradient(135deg,#0a050a,#2a0a2a)">🧑‍💻</div>
+      </div>
+      <div class="team-info">
+        <div class="team-name">Bhavya Goradia</div>
+        <div class="team-role">Chief Data Scientist</div>
+        <p class="team-bio">Turns analytics into action — measurable growth, data-backed decisions, digital intelligence.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section style="padding:120px 56px;background:var(--surface)">
+  <div class="reveal">
+    <div class="s-label">Kind Words</div>
+    <div class="s-title">WHAT CLIENTS<br><em>say</em></div>
+  </div>
+  <div class="testi-grid reveal">
+    <div class="testi">
+      <div class="testi-mark">"</div>
+      <p class="testi-text">They completely transformed how our wine shop presents itself online. Elegant, fast, and exactly what our premium brand needed.</p>
+      <div class="testi-foot">
+        <div class="testi-avatar">🍷</div>
+        <div>
+          <div class="testi-who">Client Name</div>
+          <div class="testi-co">Premium Wine Shop</div>
+        </div>
+      </div>
+    </div>
+    <div class="testi">
+      <div class="testi-mark">"</div>
+      <p class="testi-text">The brochure and website elevated our entire brand perception. Our clients genuinely comment on the quality — it made us look world-class.</p>
+      <div class="testi-foot">
+        <div class="testi-avatar">🏠</div>
+        <div>
+          <div class="testi-who">Client Name</div>
+          <div class="testi-co">Real Estate Firm</div>
+        </div>
+      </div>
+    </div>
+    <div class="testi">
+      <div class="testi-mark">"</div>
+      <p class="testi-text">Our wedding reel was beyond anything we imagined. PixelToBinary captured every emotion so beautifully — we've watched it a hundred times.</p>
+      <div class="testi-foot">
+        <div class="testi-avatar">💍</div>
+        <div>
+          <div class="testi-who">Client Name</div>
+          <div class="testi-co">Wedding Couple</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section reveal">
+  <div class="cta-big">
+    LET'S BUILD<br>SOMETHING<br><em>remarkable.</em>
+  </div>
+  <div class="cta-right">
+    <a class="cta-email" href="mailto:pixeltobinary@gmail.com">pixeltobinary@gmail.com</a>
+    <a class="btn-dark" href="#">Start a Project →</a>
+    <div style="display:flex;flex-direction:column;gap:4px;margin-top:8px">
+      <div style="font-size:12px;color:rgba(12,11,9,.5);letter-spacing:.06em">📍 Mumbai +91 9619229149</div>
+      <div style="font-size:12px;color:rgba(12,11,9,.5);letter-spacing:.06em">📍 Toronto +1 7789229223</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-logo">PIXEL<span>TO</span>BINARY</div>
+      <p class="footer-tag">Full-service creative agency. Mumbai & Toronto.</p>
+      <div class="footer-locs" style="margin-top:20px">
+        <div>
+          <div class="floc-city">Mumbai, India</div>
+          <div class="floc-addr">Unit 4, Jayraj Tower<br>Dahisar East — 400068</div>
+        </div>
+        <div>
+          <div class="floc-city">Toronto, Canada</div>
+          <div class="floc-addr">39 Queens Quay East<br>Ontario, M5E 0A5</div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-cols">
+      <div>
+        <div class="fcol-title">Services</div>
+        <ul class="fcol-links">
+          <li><a href="#">Web Design</a></li>
+          <li><a href="#">Video & Reels</a></li>
+          <li><a href="#">Branding</a></li>
+          <li><a href="#">Social Media</a></li>
+          <li><a href="#">Graphic Design</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="fcol-title">Company</div>
+        <ul class="fcol-links">
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Our Work</a></li>
+          <li><a href="#">The Team</a></li>
+          <li><a href="#">Contact</a></li>
+          <li><a href="#">Instagram</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="footer-btm">
+    <div class="footer-copy">© 2025 PixelToBinary. All rights reserved.</div>
+    <div class="footer-soc">
+      <a href="#">Instagram</a>
+      <a href="#">LinkedIn</a>
+      <a href="#">Facebook</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// CURSOR
+const cur=document.getElementById('cur'),trail=document.getElementById('trail');
+let mx=0,my=0,tx=0,ty=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx-6+'px';cur.style.top=my-6+'px'});
+(function tick(){tx+=(mx-tx)*.1;ty+=(my-ty)*.1;trail.style.left=tx-20+'px';trail.style.top=ty-20+'px';requestAnimationFrame(tick)})();
+document.querySelectorAll('a,button,.work-item,.svc,.team-card').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cur.style.transform='scale(2.5)';trail.style.transform='scale(.4)';trail.style.opacity='.1'});
+  el.addEventListener('mouseleave',()=>{cur.style.transform='scale(1)';trail.style.transform='scale(1)';trail.style.opacity='.3'});
+});
+
+// NAV SCROLL
+const nav=document.getElementById('nav');
+window.addEventListener('scroll',()=>nav.classList.toggle('stuck',window.scrollY>50));
+
+// GRAIN CANVAS
+const canvas=document.getElementById('grainCanvas');
+const ctx=canvas.getContext('2d');
+function resize(){canvas.width=window.innerWidth;canvas.height=window.innerHeight}
+resize();window.addEventListener('resize',resize);
+function drawGrain(){
+  const img=ctx.createImageData(canvas.width,canvas.height);
+  for(let i=0;i<img.data.length;i+=4){
+    const v=Math.random()*255|0;
+    img.data[i]=img.data[i+1]=img.data[i+2]=v;
+    img.data[i+3]=18;
+  }
+  ctx.putImageData(img,0,0);
+}
+let gFrame;
+function animateGrain(){drawGrain();gFrame=requestAnimationFrame(animateGrain)}
+animateGrain();
+
+// SCROLL REVEAL
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')});
+},{threshold:.08});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>
