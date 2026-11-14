@@ -273,6 +273,19 @@ footer{background:var(--surface);padding:52px 56px 36px;border-top:1px solid var
 .tc:hover .tc-img{transform:scale(1.06)}
 .tc-memorial{display:inline-flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.12em;color:#7BAFD4;margin-top:2px;opacity:.8}
 .tc-memorial::before{content:"♾";font-size:11px}
+
+.reel-modal{display:none;position:fixed;inset:0;z-index:500;background:rgba(10,12,16,.92);backdrop-filter:blur(14px);align-items:center;justify-content:center;padding:24px}
+.reel-modal.open{display:flex}
+.reel-box{background:var(--surface);border:1px solid var(--border2);max-width:520px;width:100%;padding:40px 36px;position:relative}
+.reel-box h3{font-family:var(--display);font-size:42px;letter-spacing:.04em;color:var(--cream);line-height:1;margin-bottom:6px}
+.reel-box h3 em{font-family:var(--italic);font-style:italic;font-size:.8em;color:var(--blue-light)}
+.reel-box p{font-size:13px;color:var(--muted);margin-bottom:26px;line-height:1.7}
+.reel-link{display:flex;align-items:center;justify-content:space-between;padding:18px 0;border-top:1px solid var(--border);color:var(--cream-dim);text-decoration:none;font-size:15px;transition:color .2s,padding .25s}
+.reel-link:last-of-type{border-bottom:1px solid var(--border)}
+.reel-link:hover{color:var(--blue-light);padding-left:8px}
+.reel-link span{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--blue-light)}
+.reel-close{position:absolute;top:14px;right:18px;background:none;border:none;color:var(--muted);font-size:26px;cursor:pointer;line-height:1}
+.reel-close:hover{color:var(--cream)}
 </style>
 </head>
 <body>
@@ -352,24 +365,24 @@ footer{background:var(--surface);padding:52px 56px 36px;border-top:1px solid var
     <a class="see-all" href="https://www.instagram.com/pixeltobinary" target="_blank">View All on Instagram</a>
   </div>
   <div class="wgrid reveal">
-    <a class="wi" href="https://www.instagram.com/pixeltobinary" target="_blank">
+    <a class="wi" href="https://www.mswinesgroup.com/" target="_blank">
       <div class="wi-inner bg-wine" style="min-height:540px">
         <div class="wi-overlay"></div><div class="wi-arrow">&#8599;</div>
         <div class="wi-tag">Web Design &middot; Branding</div>
         <div class="wi-name">Premium Wine Shop<br>&mdash; Full Website</div>
-        <div class="wi-ig">View on Instagram</div>
+        <div class="wi-ig">Visit website</div>
       </div>
     </a>
     <div class="wright">
-      <a class="wi" href="https://www.instagram.com/pixeltobinary" target="_blank">
+      <a class="wi" href="https://drive.google.com/file/d/1hMJQ061IhfjGON76t56VQ3_h8fKEEaZr/view?usp=drive_link" target="_blank">
         <div class="wi-inner bg-re" style="min-height:266px">
           <div class="wi-overlay"></div><div class="wi-arrow">&#8599;</div>
           <div class="wi-tag">Web &middot; Print &middot; Branding</div>
           <div class="wi-name">Luxury Real Estate<br>&mdash; Site &amp; Brochure</div>
-          <div class="wi-ig">View on Instagram</div>
+          <div class="wi-ig">View brochure</div>
         </div>
       </a>
-      <a class="wi" href="https://www.instagram.com/pixeltobinary" target="_blank">
+      <a class="wi" href="https://www.instagram.com/p/DIBvNd2NupP/" target="_blank">
         <div class="wi-inner bg-logo" style="min-height:266px">
           <div class="wi-overlay"></div><div class="wi-arrow">&#8599;</div>
           <div class="wi-tag">Logo Design</div>
@@ -380,15 +393,15 @@ footer{background:var(--surface);padding:52px 56px 36px;border-top:1px solid var
     </div>
   </div>
   <div class="wbottom reveal">
-    <a class="wi" href="https://www.instagram.com/pixeltobinary" target="_blank">
+    <a class="wi" href="#wedding-reels" onclick="openReels(event)">
       <div class="wi-inner bg-wed" style="min-height:270px">
         <div class="wi-overlay"></div><div class="wi-arrow">&#8599;</div>
         <div class="wi-tag">Video Production</div>
         <div class="wi-name">Wedding Reels<br>&mdash; Shoot &amp; Edit</div>
-        <div class="wi-ig">View on Instagram</div>
+        <div class="wi-ig">Watch 3 reels</div>
       </div>
     </a>
-    <a class="wi" href="https://www.instagram.com/pixeltobinary" target="_blank">
+    <a class="wi" href="https://www.instagram.com/reel/DAI7Fkmt2ZV/" target="_blank">
       <div class="wi-inner bg-gym" style="min-height:270px">
         <div class="wi-overlay"></div><div class="wi-arrow">&#8599;</div>
         <div class="wi-tag">Social Media &middot; Video</div>
@@ -457,7 +470,7 @@ footer{background:var(--surface);padding:52px 56px 36px;border-top:1px solid var
 <section class="cta-band reveal" id="contact">
   <div class="cta-big">LET'S BUILD<br>SOMETHING<br><em>remarkable.</em></div>
   <div class="cta-r">
-    <a class="cta-email" href="/cdn-cgi/l/email-protection#6f1f06170a031b000d06010e1d162f08020e0603410c0002"><span class="__cf_email__" data-cfemail="3b4b52435e574f545952555a49427b5c565a525715585456">[email&#160;protected]</span></a>
+    <a class="cta-email" href="mailto:pixeltobinary@gmail.com">pixeltobinary@gmail.com</a>
     <a class="btn-cta" href="https://wa.me/918850341760" target="_blank">Start a Project &rarr;</a>
     <div class="cta-loc">&#x1F4CD; Mumbai &nbsp;+91 8850-341760</div>
   </div>
@@ -508,7 +521,21 @@ footer{background:var(--surface);padding:52px 56px 36px;border-top:1px solid var
   </div>
 </footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<!-- WEDDING REELS PICKER -->
+<div class="reel-modal" id="reelModal" onclick="if(event.target===this)closeReels()">
+  <div class="reel-box">
+    <button class="reel-close" onclick="closeReels()" aria-label="Close">&times;</button>
+    <h3>Wedding <em>reels</em></h3>
+    <p>Shot and edited by us. Pick a reel to watch on Instagram.</p>
+    <a class="reel-link" href="https://www.instagram.com/reel/DBGD9oxSIs7/" target="_blank" rel="noopener">Wedding Reel 01 <span>Watch &rarr;</span></a>
+    <a class="reel-link" href="https://www.instagram.com/reel/DBTxOA9S7P8/" target="_blank" rel="noopener">Wedding Reel 02 <span>Watch &rarr;</span></a>
+    <a class="reel-link" href="https://www.instagram.com/reel/DCysdXLtCFy/" target="_blank" rel="noopener">Wedding Reel 03 <span>Watch &rarr;</span></a>
+  </div>
+</div>
+<script>
+function openReels(e){e.preventDefault();document.getElementById("reelModal").classList.add("open");document.body.style.overflow="hidden";}
+function closeReels(){document.getElementById("reelModal").classList.remove("open");document.body.style.overflow="";}
+document.addEventListener("keydown",function(e){if(e.key==="Escape")closeReels();});
 var cur=document.getElementById("cur"),ring=document.getElementById("curRing");
 var mx=0,my=0,rx=0,ry=0;
 document.addEventListener("mousemove",function(e){
